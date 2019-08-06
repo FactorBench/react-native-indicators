@@ -37,6 +37,7 @@ export default class WaveIndicator extends PureComponent {
   renderComponent({ index, count, progress }) {
     let { size, color, waveFactor, waveMode } = this.props;
     let fill = 'fill' === waveMode;
+    let scaleFactor = 1 - Math.pow(waveFactor, index);
 
     let waveStyle = {
       height: size,
@@ -46,12 +47,12 @@ export default class WaveIndicator extends PureComponent {
       [fill? 'backgroundColor' : 'borderColor']: color,
       transform: [{
         scale: progress.interpolate({
-          inputRange: [0, 1 - Math.pow(waveFactor, index), 1],
+          inputRange: [0, scaleFactor || 0.001, 1], // For Android 9 the value cannot be zero
           outputRange: [0, 0, 1],
         }),
       }],
       opacity: progress.interpolate({
-        inputRange: [0, 1 - Math.pow(waveFactor, index), 1],
+        inputRange: [0, scaleFactor, 1],
         outputRange: [1, 1, 0],
       }),
     };
